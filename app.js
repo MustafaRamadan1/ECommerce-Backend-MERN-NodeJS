@@ -1,12 +1,12 @@
-const express = require('express');
+import express from 'express'
 
-const morgan = require('morgan');
+import morgan from 'morgan'
 
-const AppError = require('./utils/appError');
+import globalErrorHandler from './utils/globalErrorHandler';
 
-const globalErrorHandler = require('./utils/globalErrorHandler');
 
-const userRoutes = require('./routes/userRoutes');
+import userRoutes from './routes/userRoutes';
+
 const app = express();
 
 app.use(morgan('dev'));
@@ -19,4 +19,12 @@ app.use('/api/v1/users', userRoutes);
 
 app.all('*', globalErrorHandler);
 
-module.exports = app;
+
+
+
+
+
+
+
+export default app;
+

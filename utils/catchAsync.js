@@ -4,4 +4,4 @@ const catchAsync = func => (req, res , next) =>{
 
 
 
-module.exports = catchAsync;
+export default catchAsync;

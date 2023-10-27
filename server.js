@@ -1,17 +1,27 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose'
 
 
-const app = require('./app');
 
-const dotenv= require('dotenv');
+// import app from './app'
 
-dotenv.config({path: `${__dirname}/config.env`});
+// console.log(app)
+import dotenv from 'dotenv';
 
-// mongoose.connect(process.env.DB_LINK).then(()=>console.log(`Connection success`)).catch(()=>console.log(`Connection Failed`));
+import app from './app';
 
-mongoose.connect(process.env.DB_LINK).then(()=>console.log(`Connection success`)).catch((err)=>console.log(err));
-
+dotenv.config();
 
 const port = process.env.PORT || 3000;
 
-app.listen(port, '127.0.0.1', ()=>console.log(`Server is running on port ${port}`));
+// mongoose.connect(process.env.DB_LINK).then(()=>console.log(`Connection success`)).catch(()=>console.log(`Connection Failed`));
+
+mongoose.connect(process.env.DB_LINK).then(()=>{
+  console.log(`Connection Success`);
+  app.listen(port, '127.0.0.1', ()=>console.log(`Server is running on port ${port}`));
+  
+}).catch((err)=>console.log(err));
+
+
+
+
+

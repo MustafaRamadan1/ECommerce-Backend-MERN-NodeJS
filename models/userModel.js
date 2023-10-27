@@ -1,10 +1,10 @@
-const mongoose = require("mongoose");
+import {Schema, model} from 'mongoose';
 
-const validator = require("validator");
+import validator  from 'validator';
 
-const bcrypt = require("bcryptjs");
+import bcrypt from 'bcryptjs';
 
-const userSchema = new mongoose.Schema({
+const userSchema = new Schema({
   name: {
     type: String,
     required: [true, "Please provide name"],
@@ -55,6 +55,6 @@ userSchema.pre("save", async function (next) {
   this.confirmPassword = undefined;
 });
 
-const User = mongoose.model("User", userSchema);
+const User = model("User", userSchema);
 
-module.exports = User;
+export default User;

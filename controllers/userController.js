@@ -1,11 +1,10 @@
-const User = require('../models/userModel');
+import User from '../models/userModel';
 
-const jwt = require('jsonwebtoken');
+import * as jwt from 'jsonwebtoken';
 
-const catchAsync= require('../utils/catchAsync');
+import catchAsync from '../utils/catchAsync';
 
-
-const signUp = catchAsync(async (req, res, next) =>{
+export const signUp = catchAsync(async (req, res, next) =>{
     
     console.log('here is signUp');
 
@@ -17,7 +16,6 @@ const signUp = catchAsync(async (req, res, next) =>{
 
 
 
-module.exports = {signUp}
 
 
 

@@ -2,10 +2,11 @@
   "name": "ecommerce-backend-mern-nodejs",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+
+  "main": "./server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "start": "nodemon index.js"
   },
   "author": "Ali & Mustafa",
   "license": "ISC",
@@ -24,6 +25,9 @@
     "winston": "^3.11.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.23.2",
+    "@babel/preset-env": "^7.23.2",
+    "@babel/register": "^7.22.15",
     "morgan": "^1.10.0",
     "nodemon": "^3.0.1"
   }
