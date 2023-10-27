@@ -33,7 +33,6 @@ const userSchema = new Schema({
   },
   confirmPassword: {
     type: String,
-    required: [true, "Please Provide a password"],
     trim: true,
     validate: {
       validator: function (value) {
