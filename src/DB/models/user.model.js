@@ -56,7 +56,8 @@ const userSchema = new Schema({
   toObject: {
     virtuals: true
   }, 
-  id: false
+  id: false,
+  password: false
 });
 
 userSchema.virtual('age').get(function (){

@@ -53,8 +53,7 @@ const login = catchAsync(async (req, res, next) => {
 
    
   const token =  signToken({ id: user._id })
-  
-  user.password = undefined;
+
 
   res.status(200).json({
     status: "success",

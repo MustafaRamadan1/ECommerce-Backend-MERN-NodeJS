@@ -6,14 +6,22 @@ import morgan from "morgan";
 
 import globalErrorHandler from "./utils/globalErrorHandler";
 
+
 import appRoutes from "./routes/index";
 import AppError from "./utils/appError";
 
+
+import limiter from './utils/rate-limiter';
+
 const app = express();
+
+
+app.use(limiter(10, (60 * 60 * 1000)));
 
 app.use(morgan("dev"));
 
 app.use(cors());
+
 
 app.use(express.json());
 
