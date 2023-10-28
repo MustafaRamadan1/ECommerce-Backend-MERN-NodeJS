@@ -36,6 +36,8 @@ const signUp = catchAsync(async (req, res, next) =>{
 })
 
 
+
+
 const getAllUsers = catchAsync(async (req, res , next)=>{
 
     const users = await User.find();

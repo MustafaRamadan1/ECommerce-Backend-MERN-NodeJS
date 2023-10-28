@@ -1,3 +1,5 @@
+import AppError from "./appError";
+
 const developmentError = (error, res) =>{
     
     res.status(error.statusCode).json({
@@ -28,7 +30,20 @@ const productionError = (err, res) =>{
     }
 }
 
+
+
+const duplicateErrorHandler = (err, res)=>{
+    
+    const message = `The duplicate key is ${Object.keys(err.keyPattern)[0]} and the value is ${Object.values(err.keyValue)[0]}`;
+    console.log(message);
+
+    return new AppError(message, 409 )
+}
 const globalErrorHandler = (error, req, res, next) =>{
+
+    error.statusCode = error.statusCode || 500;
+
+    error.status = error.status || 'error';
 
     if (process.env.NODE_ENV === "Development")
     {
@@ -37,7 +52,12 @@ const globalErrorHandler = (error, req, res, next) =>{
     else 
     {
         let err = {...error};
+
+        if (err.code ===11000) err = duplicateErrorHandler(err, res);
+        productionError(err, res);
     }
+
+    
 };
 
 
