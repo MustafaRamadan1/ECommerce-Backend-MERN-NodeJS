@@ -41,10 +41,27 @@ const userSchema = new Schema({
       message: "Confirm Password Should be the same as password",
     },
   },
+  DOB: Date,
   passwordChangedAt: Date,
   passwordResetToken: String,
-  passwordResetExpires: Date
+  passwordResetExpires: Date, 
+  CreatedAt: {
+    type: Date, 
+    default: Date.now()
+  }
+}, {
+  toJSON:{
+    virtuals: true
+  },
+  toObject: {
+    virtuals: true
+  }, 
+  _id: false
 });
+
+userSchema.virtual('age').get(function (){
+  return new Date().getFullYear() - this.DOB.getFullYear();
+})
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
