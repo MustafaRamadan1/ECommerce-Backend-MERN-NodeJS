@@ -71,6 +71,12 @@ userSchema.pre("save", async function (next) {
   this.confirmPassword = undefined;
 });
 
+
+userSchema.methods.correctPassword = async function (inputPassword, userPassword)
+{
+  return await bcrypt.compare(inputPassword, userPassword);
+}
+
 const User = model("User", userSchema);
 
 export default User;
