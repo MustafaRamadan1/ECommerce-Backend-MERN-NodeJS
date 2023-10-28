@@ -8,7 +8,11 @@ import globalErrorHandler from "./utils/globalErrorHandler";
 
 import appRoutes from "./routes/index";
 
+import rateLimiter from './utils/rate-limiter';
+
 const app = express();
+
+app.use(rateLimiter(100, (60 * 60 * 1000)));
 
 app.use(morgan("dev"));
 
