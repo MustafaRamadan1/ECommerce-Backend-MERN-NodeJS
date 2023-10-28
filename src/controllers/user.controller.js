@@ -6,6 +6,14 @@ import catchAsync from "../utils/catchAsync";
 
 import AppError from "../utils/appError";
 
+
+const signToken = (payload) => {
+
+    return jwt.sign(payload, process.env.SECERTKEY, {
+        expiresIn: process.env.JWT_EXPIRES_IN
+    })
+};
+
 const signUp = catchAsync(async (req, res, next) => {
   const { name, email, password, confirmPassword, DOB } = req.body;
 
@@ -21,10 +29,8 @@ const signUp = catchAsync(async (req, res, next) => {
 
   if (!user) return next(new AppError(`Can't create user`, 400));
 
-  const token = jwt.sign({ id: user._id }, process.env.SECERTKEY, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
-  });
-
+ 
+  const token =  signToken({ id: user._id })
   res.status(200).json({
     status: "success",
     token,
@@ -34,36 +40,30 @@ const signUp = catchAsync(async (req, res, next) => {
   });
 });
 
+const login = catchAsync(async (req, res, next) => {
+  const { email, password } = req.body;
 
+  console.log(req.body);
+  const user = await User.findOne({ email }).select("+password -__v");
 
-const login = catchAsync(async (req, res , next)=>{
+  const correct = await user.correctPassword(password, user.password);
 
-    const {email, password} = req.body;
+  if (!user || !correct)
+    return next(new AppError("Incorrect email or password", 401));
 
-    console.log(req.body);
-    const user = await User.findOne({email}).select('+password -__v');
-
-    const correct = await user.correctPassword(password , user.password);
    
-    if (!user || !correct) return next(new AppError('Incorrect email or password', 401));
+  const token =  signToken({ id: user._id })
+  
+  user.password = undefined;
 
-    const token = jwt.sign({id: user._id}, process.env.SECERTKEY, {
-        expiresIn: process.env.JWT_EXPIRES_IN
-    });
-
-    user.password = undefined;
-
-
-
-    res.status(200).json({
-        status: 'success', 
-        token, 
-        data: {
-            user
-        }
-    })
-
-})
+  res.status(200).json({
+    status: "success",
+    token,
+    data: {
+      user,
+    },
+  });
+});
 const getAllUsers = catchAsync(async (req, res, next) => {
   const users = await User.find();
 
@@ -78,5 +78,5 @@ const getAllUsers = catchAsync(async (req, res, next) => {
 export default {
   signUp,
   getAllUsers,
-  login
+  login,
 };
