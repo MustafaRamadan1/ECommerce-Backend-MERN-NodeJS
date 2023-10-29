@@ -7,6 +7,7 @@ import morgan from "morgan";
 import globalErrorHandler from "./utils/globalErrorHandler";
 
 import appRoutes from "./routes/index";
+import AppError from "./utils/appError";
 
 import rateLimiter from './utils/rate-limiter';
 
@@ -24,6 +25,12 @@ app.use("/static", express.static("public"));
 
 app.use(appRoutes);
 
-app.all("*", globalErrorHandler);
+app.all("*", (req, res ,next)=>{
+
+    return next(new AppError('Page not Found', 404));
+});
+
+
+app.use(globalErrorHandler);
 
 export default app;

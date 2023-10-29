@@ -56,7 +56,7 @@ const userSchema = new Schema({
   toObject: {
     virtuals: true
   }, 
-  _id: false
+  id: false
 });
 
 userSchema.virtual('age').get(function (){
@@ -84,6 +84,10 @@ userSchema.methods.toJSON = function (){
 
   return userObject;
 
+};
+userSchema.methods.correctPassword = async function (inputPassword, userPassword)
+{
+  return await bcrypt.compare(inputPassword, userPassword);
 }
 
 const User = model("User", userSchema);

@@ -1,60 +1,82 @@
-import User from '../DB/models/user.model';
+import User from "../DB/models/user.model";
 
-import * as jwt from 'jsonwebtoken';
+import * as jwt from "jsonwebtoken";
 
-import catchAsync from '../utils/catchAsync';
+import catchAsync from "../utils/catchAsync";
+
+import AppError from "../utils/appError";
+
+const signUp = catchAsync(async (req, res, next) => {
+  const { name, email, password, confirmPassword, DOB } = req.body;
+
+  if (!req.body) return next(new AppError("Please provide all fields", 400));
+
+  const user = await User.create({
+    name,
+    email,
+    password,
+    confirmPassword,
+    DOB,
+  });
+
+  if (!user) return next(new AppError(`Can't create user`, 400));
+
+  const token = jwt.sign({ id: user._id }, process.env.SECERTKEY, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  });
+
+  res.status(200).json({
+    status: "success",
+    token,
+    date: {
+      user,
+    },
+  });
+});
 
 
-import AppError from '../utils/appError';
 
-const signUp = catchAsync(async (req, res, next) =>{
-    
+const login = catchAsync(async (req, res , next)=>{
 
-    const {name , email, password, confirmPassword, DOB} = req.body;
+    const {email, password} = req.body;
 
-    if (!req.body) return next(new AppError('Please provide all fields', 400));
+    console.log(req.body);
+    const user = await User.findOne({email}).select('+password -__v');
 
-    const user = await User.create({
-        name , email, password, confirmPassword, DOB
+    const correct = await user.correctPassword(password , user.password);
+   
+    if (!user || !correct) return next(new AppError('Incorrect email or password', 401));
+
+    const token = jwt.sign({id: user._id}, process.env.SECERTKEY, {
+        expiresIn: process.env.JWT_EXPIRES_IN
     });
 
-    if(!user)   return next(new AppError(`Can't create user`, 400));
-
-   const token  = jwt.sign({id: user._id}, process.env.SECERTKEY, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
-   });
+    user.password = undefined;
 
 
-   res.status(200).json({
-    status: 'success',
-    token, 
-    date: {
-        user
-    }
-   })
-
-})
-
-
-const getAllUsers = catchAsync(async (req, res , next)=>{
-
-    const users = await User.find();
 
     res.status(200).json({
-        status: 'success',
+        status: 'success', 
+        token, 
         data: {
-            users
+            user
         }
     })
+
 })
+const getAllUsers = catchAsync(async (req, res, next) => {
+  const users = await User.find();
 
-
+  res.status(200).json({
+    status: "success",
+    data: {
+      users,
+    },
+  });
+});
 
 export default {
-    signUp,
-    getAllUsers
-}
-
-
-
-
+  signUp,
+  getAllUsers,
+  login
+};
