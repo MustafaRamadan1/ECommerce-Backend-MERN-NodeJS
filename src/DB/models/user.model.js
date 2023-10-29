@@ -71,6 +71,21 @@ userSchema.pre("save", async function (next) {
   this.confirmPassword = undefined;
 });
 
+
+userSchema.methods.toJSON = function (){
+
+  const user  = this;
+
+  const userObject  = user.toObject();
+
+  delete userObject.password;
+
+  delete userObject.__v;
+
+  return userObject;
+
+}
+
 const User = model("User", userSchema);
 
 export default User;
