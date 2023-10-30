@@ -34,36 +34,29 @@ const signUp = catchAsync(async (req, res, next) => {
   });
 });
 
+const login = catchAsync(async (req, res, next) => {
+  const { email, password } = req.body;
 
+  console.log(req.body);
+  const user = await User.findOne({ email }).select("+password -__v");
 
-const login = catchAsync(async (req, res , next)=>{
+  const correct = await user.correctPassword(password, user.password);
 
-    const {email, password} = req.body;
+  if (!user || !correct)
+    return next(new AppError("Incorrect email or password", 401));
 
-    console.log(req.body);
-    const user = await User.findOne({email}).select('+password -__v');
+  const token = jwt.sign({ id: user._id }, process.env.SECERTKEY, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  });
 
-    const correct = await user.correctPassword(password , user.password);
-   
-    if (!user || !correct) return next(new AppError('Incorrect email or password', 401));
-
-    const token = jwt.sign({id: user._id}, process.env.SECERTKEY, {
-        expiresIn: process.env.JWT_EXPIRES_IN
-    });
-
-    user.password = undefined;
-
-
-
-    res.status(200).json({
-        status: 'success', 
-        token, 
-        data: {
-            user
-        }
-    })
-
-})
+  res.status(200).json({
+    status: "success",
+    token,
+    data: {
+      user,
+    },
+  });
+});
 const getAllUsers = catchAsync(async (req, res, next) => {
   const users = await User.find();
 
@@ -78,5 +71,5 @@ const getAllUsers = catchAsync(async (req, res, next) => {
 export default {
   signUp,
   getAllUsers,
-  login
+  login,
 };

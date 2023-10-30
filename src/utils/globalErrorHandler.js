@@ -52,6 +52,7 @@ const globalErrorHandler = (error, req, res, next) =>{
     {
         let err = {...error};
 
+        err.message = error.message;
         if (err.code ===11000) err = duplicateErrorHandler(err, res);
         productionError(err, res);
     }
