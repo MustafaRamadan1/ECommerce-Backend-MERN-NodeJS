@@ -38,6 +38,15 @@ const duplicateErrorHandler = (err, res)=>{
 
     return new AppError(message, 409 )
 }
+
+const invalidJWT =  (error) =>{
+    return new AppError("Invalid token, Please Login again", 401);
+}
+
+const expireToken = (error) =>{
+    
+    return new AppError('Token expired, Please Login again', 401);
+}
 const globalErrorHandler = (error, req, res, next) =>{
 
     error.statusCode = error.statusCode || 500;
@@ -54,6 +63,10 @@ const globalErrorHandler = (error, req, res, next) =>{
 
         err.message = error.message;
         if (err.code ===11000) err = duplicateErrorHandler(err, res);
+
+        if (err.name === "JsonWebTokenError") err = invalidJWT(err);
+
+        if (err.name === "TokenExpiredError") err = expireToken(err); 
         productionError(err, res);
     }
 };

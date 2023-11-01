@@ -72,6 +72,20 @@ userSchema.pre("save", async function (next) {
 });
 
 
+userSchema.methods.changePassword = function (jwtInit){
+
+  console.log(`jwt is ${jwtInit}`);
+  if (this.passwordChangedAt)
+  {
+    const changedAt = parseInt(this.passwordChangedAt / 1000, 10);
+    console.log(`the different between changed at , jwtinit`);
+    console.log(changedAt, jwtInit);
+
+    return jwtInit < changedAt;
+  }
+  return false;
+}
+
 userSchema.methods.toJSON = function (){
 
   const user  = this;

@@ -1,4 +1,4 @@
-import AppError from "../src/utils/appError";
+import AppError from "../utils/appError";
 
 const validation = (schema) => (req, res, next) => {
   const { error } = schema.validate(req.body);
