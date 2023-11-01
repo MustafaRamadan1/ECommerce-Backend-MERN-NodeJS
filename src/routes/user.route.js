@@ -16,5 +16,5 @@ router.get('/', userController.protect,  userController.getAllUsers);
 
 router.post('/login',validation(userValidationSchemas.login), userController.login);
 
-
+router.post('/updatePassword/:id', userController.updatePassword);
 export default router;

@@ -91,34 +91,37 @@ const protect = catchAsync(async (req, res , next)=>{
   if (!freshUser) return next(new AppError('The user no longer exist', 401));
   //4) check if the user change the password after we send the token of it if he didn't so we go to the next protected middleware
 
-  // if(freshUser.changePassword(decoded.iat)) return next(new AppError('User recently changed password! Please login again', 401));
+  if(freshUser.changePassword(decoded.iat)) return next(new AppError('User recently changed password! Please login again', 401));
 
   req.user = freshUser;
   next();
 });
 
 
-// const updatePassword = catchAsync(async (req, res , next)=>{
+const updatePassword = catchAsync(async (req, res , next)=>{
 
-//   const {id} = req.params;
+  const {id} = req.params;
 
-//   const user = await User.findById(id);
+  const user = await User.findById(id);
 
-//   if (!user) return next(new AppError('The user no longer exist', 401));
+  if (!user) return next(new AppError('The user no longer exist', 401));
 
-//   user.password = req.body.password;
-//   user.passwordChangedAt = Date.now();
+  user.password = req.body.password;
+  user.passwordChangedAt = Date.now();
 
-//   res.status(200).json({
-//     status: 'success',
-//     message: 'User changed Password', 
-//     user
-//   })
-// })
+  await user.save();
+
+  res.status(200).json({
+    status: 'success',
+    message: 'User changed Password', 
+    user
+  })
+})
 
 export default {
   signUp,
   getAllUsers,
   login,
   protect,
+  updatePassword
 };
