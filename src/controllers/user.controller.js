@@ -116,6 +116,16 @@ const updatePassword = catchAsync(async (req, res , next)=>{
     message: 'User changed Password', 
     user
   })
+});
+
+const  restrictTo = catchAsync(async (req, res , next)=>{
+
+  if (req.user.role !== 'admin')
+  {
+    return next(new AppError('You do not have permission to perform this action', 403));
+  }
+
+  next();
 })
 
 export default {
@@ -123,5 +133,5 @@ export default {
   getAllUsers,
   login,
   protect,
-  updatePassword
+  restrictTo
 };

@@ -12,9 +12,8 @@ const router = express.Router();
 
 router.post('/signUp',  validation(userValidationSchemas.signup) , userController.signUp);
 
-router.get('/', userController.protect,  userController.getAllUsers);
+router.get('/', userController.protect, userController.restrictTo,  userController.getAllUsers);
 
 router.post('/login',validation(userValidationSchemas.login), userController.login);
 
-router.post('/updatePassword/:id', userController.updatePassword);
 export default router;
