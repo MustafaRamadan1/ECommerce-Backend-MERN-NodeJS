@@ -78,12 +78,12 @@ const protect = catchAsync(async (req, res , next)=>{
     token = req.headers.authorization.split(' ')[1];
   }
   
+  console.log(token);
   if (!token) return next(new AppError('You are not logged in! Please log in to get access', 401));
 
   //2) verify the token , if it valid or no and if it expire or no 
 
   const decoded = await promisify(jwt.verify)(token, process.env.SECERTKEY);
-
   //3) after verfiy the token and it's valid and not expire we'll have the payload and by the id we'll check if we have user with this id
 
   const freshUser = await User.findById(decoded.id);
