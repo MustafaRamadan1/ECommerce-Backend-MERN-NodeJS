@@ -1,6 +1,6 @@
 import express from 'express';
 
-import {userController} from '../controllers/index'
+import {authController, userController} from '../controllers/index'
 
 import validation from '../middlewares/validation';
 
@@ -10,10 +10,10 @@ import userValidationSchemas   from '../validation/index'
 const router = express.Router();
 
 
-router.post('/signUp',  validation(userValidationSchemas.signup) , userController.signUp);
+router.post('/signUp',  validation(userValidationSchemas.signup) , authController.signUp);
 
-router.get('/', userController.protect, userController.restrictTo,  userController.getAllUsers);
+router.get('/',  userController.getAllUsers);
 
-router.post('/login',validation(userValidationSchemas.login), userController.login);
+router.post('/login',validation(userValidationSchemas.login), authController.login);
 
 export default router;

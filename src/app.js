@@ -17,8 +17,10 @@ app.use(cors());
 app.use(express.json());
 app.use(mongoSanitize());
 app.use("/static", express.static("public"));
-
 app.use(appRoutes);
+
+
+
 
 app.all("*", (req, res ,next)=>{
 
