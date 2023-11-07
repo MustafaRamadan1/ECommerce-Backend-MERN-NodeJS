@@ -1,6 +1,11 @@
- import authController from "./auth.controller";
+import authController from "./auth.controller";
 import userController from "./user.controller";
- export  {
-   authController,
-   userController
- }
+import productController from "./product.controller";
+import categoryController from "./category.controller";
+
+export  {
+    authController,
+    userController,
+    productController,
+    categoryController
+}
