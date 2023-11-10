@@ -8,15 +8,15 @@ import protect from '../middlewares/auth.middleware';
 
 import isAdmin from '../middlewares/isAdmin.middleware';
 
-import userValidationSchemas   from '../validation/index'
+import {userValidator}   from '../validation/index'
 
 const router = express.Router();
 
 
-router.post('/signUp',  validation(userValidationSchemas.signup) , authController.signUp);
+router.post('/signUp',  validation(userValidator.signup) , authController.signUp);
 
 router.get('/', protect, isAdmin,   userController.getAllUsers);
 
-router.post('/login',validation(userValidationSchemas.login), authController.login);
+router.post('/login',validation(userValidator.login), authController.login);
 
 export default router;

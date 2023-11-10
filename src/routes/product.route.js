@@ -3,15 +3,14 @@ import { Router } from 'express';
 import { productController } from '../controllers/index'
 
 import validation from '../middlewares/validation';
-import  validationSchema   from '../validation/index'
-const { productValidator } = validationSchema
+import  { productValidator }   from '../validation/index'
 
 const router = Router();
 
-router.post('/' , productController.createProduct);
+router.post('/' , validation(productValidator.product),productController.createProduct);
 router.get('/', productController.getAllProducts);
 router.get('/:id', productController.getProductDetails);
-router.patch('/:id' , productController.updateProduct);
+router.patch('/:id' ,validation(productValidator.product), productController.updateProduct);
 router.delete('/:id', productController.deleteProduct);
 
 export default router;

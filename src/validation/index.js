@@ -2,10 +2,8 @@ import userValidator  from './user.validation';
 import productValidator  from './product.validation';
 import categoryValidator  from './category.validation';
 
-const validation = {
+export {
     userValidator,
     productValidator,
     categoryValidator
-
-}
-export default validation;
+};

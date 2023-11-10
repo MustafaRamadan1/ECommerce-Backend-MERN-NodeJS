@@ -6,6 +6,7 @@ import app from '../app';
 
 dotenv.config();
 
+console.log("NODE_ENV = ", process.env.NODE_ENV);
 
 
 const connectDb = () =>{
@@ -16,7 +17,7 @@ const connectDb = () =>{
         console.log(`Connection Success`);
         app.listen(port, '127.0.0.1', ()=>console.log(`Server is running on port ${port}`));
         
-      }).catch((err)=>console.log(err));
+      }).catch((err)=>console.log(err.message));
 };
 
 export default connectDb;
