@@ -11,6 +11,6 @@ router.post('/' , validation(productValidator.product),productController.createP
 router.get('/', productController.getAllProducts);
 router.get('/:id', productController.getProductDetails);
 router.patch('/:id' ,validation(productValidator.product), productController.updateProduct);
-router.delete('/:id', productController.deleteProduct);
+router.delete('/:id',validation(productValidator.product), productController.deleteProduct);
 
 export default router;

@@ -4,10 +4,9 @@ const validation = (schema) => (req, res, next) => {
   let errorCollection = [];
   const checkParts = ["body", "query", "params"];
 
-  checkParts.forEach((e) => {
-    if (req[e]) {
-      const { error } = schema.body.validate(req[e], { abortEarly: false });
-
+  checkParts.forEach((key) => {
+    if (schema[key]) {
+      const { error } = schema[key].validate(req[key], { abortEarly: false });
       if (error) {
         const message = createErrorMsg(error);
         errorCollection.push(message);

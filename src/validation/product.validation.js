@@ -15,7 +15,7 @@ const product = {
         price: Joi.number()
         .min(0)
         .messages({
-            'string.min': 'Price must be positive number',
+            'number.min': 'Price must be positive number',
         }),
         description : Joi.string().trim().min(5).max(255).pattern(/^[a-zA-Z0-9\s]+/).messages({
             'string.min' : 'Description must be at least 2 characters',
@@ -28,6 +28,10 @@ const product = {
         }),
         productImgs: Joi.any()
     }),
+    params: Joi.object().keys({
+        id: Joi.string().trim().guid({ version: 'uuidv4' })
+        .message('Product ID must be a UUID'),
+    })
 }
 
 

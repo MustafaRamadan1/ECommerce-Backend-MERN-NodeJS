@@ -79,7 +79,7 @@ const updateProduct = catchAsync(async ( req, res, next ) =>{
     if(!product) throw new AppError('Product not found', 404)
 
     const updatedProduct = await Product.findOneAndUpdate({ _id: id }, { name, price, description, categoryId }, { new: true, runValidators: true })
-    if(!updatedProduct) throw new AppError('Error in deleting product', 400)
+    if(!updatedProduct) throw new AppError('Error in updating product', 400)
 
     res.status(200).json({
         status: 'success',

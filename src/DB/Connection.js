@@ -6,7 +6,6 @@ import app from '../app';
 
 dotenv.config();
 
-console.log("NODE_ENV = ", process.env.NODE_ENV);
 
 
 const connectDb = () =>{

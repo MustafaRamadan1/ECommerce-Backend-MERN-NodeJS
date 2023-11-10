@@ -13,7 +13,7 @@ import {userValidator}   from '../validation/index'
 const router = express.Router();
 
 
-router.post('/signUp',  validation(userValidationSchemas.userValidator.signup) , authController.signUp);
+router.post('/signUp',  validation(userValidator.signup) , authController.signUp);
 
 router.get('/', protect, isAdmin,   userController.getAllUsers);
 
