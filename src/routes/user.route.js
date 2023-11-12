@@ -21,6 +21,8 @@ router.post('/signUp',  validation(userValidator.signup) , authController.signUp
 router.get('/', protect, isAdmin,   userController.getAllUsers);
 
 router.post('/login',validation(userValidator.login), authController.login);
-router.post('/updatePassword', protect, updatePassword )
+router.post('/updatePassword', protect, updatePassword );
+router.post('/forgetPassword', authController.forgetPassword);
+router.post('/forgetPassword/:token', authController.resetPassword);
 
 export default router;
