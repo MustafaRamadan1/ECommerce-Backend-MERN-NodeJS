@@ -3,6 +3,7 @@ import * as jwt from "jsonwebtoken";
 import User from "../DB/models/user.model";
 import catchAsync from "../utils/catchAsync";
 import AppError from "../utils/appError";
+import sendEmail from '../utils/sendEmail';
 
 const signUp = catchAsync(async (req, res, next) => {
   const { name, email, password, confirmPassword, DOB } = req.body;
@@ -19,17 +20,36 @@ const signUp = catchAsync(async (req, res, next) => {
 
   if (!user) return next(new AppError(`Can't create user`, 400));
 
-  const token = jwt.sign({ id: user._id }, process.env.SECERTKEY, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
-  });
 
-  res.status(200).json({
-    status: "success",
-    token,
-    date: {
-      user,
-    },
-  });
+    try{
+
+      const activateToken = user.createActivateToken();
+      await user.save();
+      await sendEmail({
+        to: user.email,
+        subject: 'Activate your Email in our Website',
+        text:`to activate your Account please go to this route
+        ${req.protocol}://${req.get('host')}/api/v1/users/activate/${activateToken}`,
+      })
+      const token = jwt.sign({ id: user._id }, process.env.SECERTKEY, {
+        expiresIn: process.env.JWT_EXPIRES_IN,
+      });
+    
+      res.status(200).json({
+        status: "success",
+        token,
+        date: {
+          user,
+        },
+      });
+    }
+
+    catch{
+
+      user.activateToken = undefined;
+      await user.save();
+      return next(new AppError(`Couldn't send the email , something went wrong`, 500));
+    }
 });
 
 const login = catchAsync(async (req, res, next) => {

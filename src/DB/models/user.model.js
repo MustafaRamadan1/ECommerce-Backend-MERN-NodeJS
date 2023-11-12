@@ -4,6 +4,8 @@ import validator  from 'validator';
 
 import bcrypt from 'bcryptjs';
 
+import crypto from 'crypto';
+
 const userSchema = new Schema({
   name: {
     type: String,
@@ -45,9 +47,14 @@ const userSchema = new Schema({
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date, 
+  activateToken: String,
   CreatedAt: {
     type: Date, 
     default: Date.now()
+  },
+  active: {
+    type: Boolean,
+    default: false
   }
 }, {
   toJSON:{
@@ -104,6 +111,15 @@ userSchema.methods.correctPassword = async function (inputPassword, userPassword
   return await bcrypt.compare(inputPassword, userPassword);
 }
 
+
+userSchema.methods.createActivateToken = function (){
+
+  const activateToken = crypto.randomBytes(32).toString('hex');
+
+  this.activateToken = crypto.createHash('sha256').update(activateToken).digest('hex');
+
+  return activateToken;
+}
 const User = model("User", userSchema);
 
 export default User;

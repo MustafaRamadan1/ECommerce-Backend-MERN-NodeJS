@@ -11,10 +11,11 @@ import isAdmin from '../middlewares/isAdmin.middleware';
 import updatePassword from '../middlewares/updatePassword.middleware';
 
 import {userValidator}   from '../validation/index'
+import activateUser from '../middlewares/activate.middleware';
 
 const router = express.Router();
 
-
+router.post('/activate/:token', activateUser)
 router.post('/signUp',  validation(userValidator.signup) , authController.signUp);
 
 router.get('/', protect, isAdmin,   userController.getAllUsers);
