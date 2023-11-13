@@ -12,7 +12,7 @@ import {userValidator}   from '../validation/index'
 
 const router = express.Router();
 
-router.post('/activate/:token', authController.activateUser);
+router.patch('/activate/:token', authController.activateUser);
 router.post('/signUp',  validation(userValidator.signup) , authController.signUp);
 
 router.get('/', protect, isAdmin,   userController.getAllUsers);
