@@ -14,7 +14,6 @@ const signUp = catchAsync(async (req, res, next) => {
     name,
     email,
     password,
-    confirmPassword,
     DOB,
   });
 
@@ -79,33 +78,14 @@ const login = catchAsync(async (req, res, next) => {
 
 
 
-const updatePassword = catchAsync(async (req, res , next)=>{
-
-  const {id} = req.params;
-
-  const user = await User.findById(id);
-
-  if (!user) return next(new AppError('The user no longer exist', 401));
-
-  user.password = req.body.password;
-  user.passwordChangedAt = Date.now();
-
-  await user.save();
-
-  res.status(200).json({
-    status: 'success',
-    message: 'User changed Password', 
-    user
-  })
-});
 
 
 const forgetPassword = catchAsync(async(req, res , next)=>{
   
   const {email} = req.body;
-
+  
   const user = await User.findOne({email});
-
+  
   if (!user) return next(new AppError('No user with this Email', 401));
 
   const resetToken = user.createPasswordResetToken();
@@ -129,24 +109,24 @@ const forgetPassword = catchAsync(async(req, res , next)=>{
     })
   }
   catch{
-
+    
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
     await user.save();
-
+    
     return next(new AppError(`Couldn't send the email , something went wrong`, 500));
   }
 });
 
 
 const resetPassword = catchAsync(async(req, res , next)=>{
-
+  
   const {token} = req.params;
-
+  
   const {password} = req.body;
-
+  
   const passwordResetToken = crypto.createHash('sha256').update(token).digest('hex');
-
+  
   const user = await User.findOne({passwordResetToken, passwordResetExpires: {$gte: Date.now()}});
 
   if (!user) return next(new AppError('Token is invalid or has expired', 401));
@@ -167,9 +147,62 @@ const resetPassword = catchAsync(async(req, res , next)=>{
   })
 });
 
+
+
+
+const activateUser = catchAsync(async (req, res ,next)=>{
+
+  const {token} = req.params;
+
+  const activateToken = crypto.createHash('sha256').update(token).digest('hex');
+
+  const user = await User.findOne({activateToken});
+
+  user.active = true;
+
+  await user.save();
+
+  res.status(200).json({
+      status: 'success',
+      message: 'User has been activated',
+      user
+  })
+})
+
+
+const updatePassword = catchAsync(async (req, res, next)=>{
+
+  const {currentPassword, newPassword} = req.body;
+
+  const user = await User.findById(req.user._id);
+  
+  if (!user) return next(new AppError('The user no longer exist', 401));
+
+  if ( !user.correctPassword(currentPassword, user.password)) 
+  return next(new AppError('Your current password is wrong', 401));
+
+  user.password = newPassword;
+  user.passwordChangedAt = Date.now() - 1000;
+  await user.save();
+  
+  const token = jwt.sign({id: user._id}, process.env.SECERTKEY, {
+    expiresIn: process.env.JWT_EXPIRES_IN
+  }) 
+  
+  
+  res.status(200).json({
+    status: 'success',
+    token,
+    user
+  })
+})
+
+
 export default {
   signUp,
   login,
   forgetPassword,
-  resetPassword
+  resetPassword,
+  activateUser,
+  updatePassword
 };

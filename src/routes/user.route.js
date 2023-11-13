@@ -8,20 +8,17 @@ import protect from '../middlewares/auth.middleware';
 
 import isAdmin from '../middlewares/isAdmin.middleware';
 
-import updatePassword from '../middlewares/updatePassword.middleware';
-
 import {userValidator}   from '../validation/index'
-import activateUser from '../middlewares/activate.middleware';
 
 const router = express.Router();
 
-router.post('/activate/:token', activateUser)
+router.post('/activate/:token', authController.activateUser);
 router.post('/signUp',  validation(userValidator.signup) , authController.signUp);
 
 router.get('/', protect, isAdmin,   userController.getAllUsers);
 
 router.post('/login',validation(userValidator.login), authController.login);
-router.post('/updatePassword', protect, updatePassword );
+router.post('/updatePassword', protect, authController.updatePassword );
 router.post('/forgetPassword', authController.forgetPassword);
 router.post('/forgetPassword/:token', authController.resetPassword);
 
