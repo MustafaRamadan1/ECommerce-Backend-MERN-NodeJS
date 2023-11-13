@@ -156,11 +156,8 @@ const activateUser = catchAsync(async (req, res ,next)=>{
 
   const activateToken = crypto.createHash('sha256').update(token).digest('hex');
 
-  const user = await User.findOne({activateToken});
+  const user = await User.findOneAndUpdate({activateToken}, {active: true}, {new: true, runValidators: true});
 
-  user.active = true;
-
-  await user.save();
 
   res.status(200).json({
       status: 'success',

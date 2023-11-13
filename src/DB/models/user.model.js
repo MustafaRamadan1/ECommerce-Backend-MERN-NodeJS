@@ -104,7 +104,7 @@ userSchema.methods.toJSON = function (){
 };
 userSchema.methods.correctPassword = async function (inputPassword, userPassword)
 {
-  return await bcrypt.compare(inputPassword, userPassword);
+  return  bcrypt.compare(inputPassword, userPassword);
 }
 
 

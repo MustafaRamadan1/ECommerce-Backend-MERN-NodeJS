@@ -19,7 +19,7 @@ router.get('/', protect, isAdmin,   userController.getAllUsers);
 
 router.post('/login',validation(userValidator.login), authController.login);
 router.post('/updatePassword', protect, authController.updatePassword );
-router.post('/forgetPassword', authController.forgetPassword);
-router.post('/forgetPassword/:token', authController.resetPassword);
+router.patch('/forgetPassword', authController.forgetPassword);
+router.patch('/resetPassword/:token', authController.resetPassword);
 
 export default router;
