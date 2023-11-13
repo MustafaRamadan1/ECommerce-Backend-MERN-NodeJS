@@ -30,8 +30,7 @@ const userSchema = new Schema({
     type: String,
     required: [true, "Please Provide a password"],
     trim: true,
-    minLength: [8, "Password Should be longer than 8 characters"],
-    select: false,
+    minLength: [8, "Password Should be longer than 8 characters"]
   },
   confirmPassword: {
     type: String,
@@ -102,9 +101,9 @@ userSchema.methods.toJSON = function (){
   return userObject;
 
 };
-userSchema.methods.correctPassword = async function (inputPassword, userPassword)
+userSchema.methods.correctPassword = async function (inputPassword)
 {
-  return  bcrypt.compare(inputPassword, userPassword);
+  return bcrypt.compare(inputPassword, this.password);
 }
 
 

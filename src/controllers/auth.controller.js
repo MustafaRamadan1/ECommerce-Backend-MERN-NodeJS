@@ -5,6 +5,10 @@ import User from "../DB/models/user.model";
 import catchAsync from "../utils/catchAsync";
 import AppError from "../utils/appError";
 import sendEmail from '../utils/sendEmail';
+import {createToken} from '../utils/helperFuncs';
+
+
+
 const signUp = catchAsync(async (req, res, next) => {
   const { name, email, password, confirmPassword, DOB } = req.body;
 
@@ -30,16 +34,12 @@ const signUp = catchAsync(async (req, res, next) => {
         text:`to activate your Account please go to this route
         ${req.protocol}://${req.get('host')}/api/v1/users/activate/${activateToken}`,
       })
-      const token = jwt.sign({ id: user._id }, process.env.SECERTKEY, {
-        expiresIn: process.env.JWT_EXPIRES_IN,
-      });
+      const token = createToken({id: user._id});
     
       res.status(200).json({
         status: "success",
         token,
-        date: {
-          user,
-        },
+        date:user
       });
     }
 
@@ -54,24 +54,21 @@ const signUp = catchAsync(async (req, res, next) => {
 const login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
-  console.log(req.body);
-  const user = await User.findOne({ email }).select("+password -__v");
+  const user = await User.findOne({ email })
 
-  const correct = await user.correctPassword(password, user.password);
+  const correct =  await user.correctPassword(password);
 
   if (!user || !correct)
     return next(new AppError("Incorrect email or password", 401));
 
-  const token = jwt.sign({ id: user._id }, process.env.SECERTKEY, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
-  });
+
+    if (!user.active) return next(new AppError('Please activate your account', 401));
+  const token = createToken({id: user._id});
 
   res.status(200).json({
     status: "success",
     token,
-    data: {
-      user,
-    },
+    data: user,
   });
 });
  
