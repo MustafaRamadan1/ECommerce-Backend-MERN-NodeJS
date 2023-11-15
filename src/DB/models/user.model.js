@@ -76,7 +76,7 @@ userSchema.pre("save", async function (next) {
 
 userSchema.methods.changePassword = function (jwtInit){
 
-  console.log(`jwt is ${jwtInit}`);
+ 
   if (this.passwordChangedAt)
   {
     const changedAt = parseInt(this.passwordChangedAt / 1000, 10);

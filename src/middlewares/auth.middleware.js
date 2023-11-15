@@ -15,8 +15,8 @@ const protect = catchAsync(async (req, res , next)=>{
 
     token = req.headers.authorization.split(' ')[1];
   }
-  
   console.log(token);
+  
   if (!token) return next(new AppError('You are not logged in! Please log in to get access', 401));
 
   //2) verify the token , if it valid or no and if it expire or no 
@@ -26,6 +26,7 @@ const protect = catchAsync(async (req, res , next)=>{
 
   const freshUser = await User.findById(decoded.id);
 
+  console.log(freshUser);
   if (!freshUser) return next(new AppError('The user no longer exist', 401));
   //4) check if the user change the password after we send the token of it if he didn't so we go to the next protected middleware
 
