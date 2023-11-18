@@ -1,5 +1,6 @@
 import { Schema, Types, model } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
+import Inventory from './inventory.model';
 
 
 const productSchema = new Schema({
@@ -43,6 +44,12 @@ productSchema.methods.toJSON = function (){
     delete productObject.__v;
     return productObject;
 };
+
+productSchema.post('findOneAndDelete', async function (doc){
+    const inventory = await Inventory.findOneAndDelete({ productId: doc._id });
+    if(!inventory) throw new AppError('Error in deleting inventory', 400)  
+})
+
 
 const Product = model("Product", productSchema);
 

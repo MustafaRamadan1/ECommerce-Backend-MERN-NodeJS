@@ -4,15 +4,19 @@ import catchAsync from "../utils/catchAsync";
 import AppError from "../utils/appError";
 import AppFeature from '../utils/appFeature';
 import Category from "../DB/models/category.model";
+import Inventory from "../DB/models/inventory.model";
 
 const createProduct = catchAsync(async ( req, res, next ) =>{
     const { 
-        body:{ name, price, description, categoryId }
+        body:{ name, price, description, categoryId, stock_quantity }
     } = req;
     const categoryExisted = await Category.findOne({ _id: categoryId })
     if(!categoryExisted) throw new AppError(`Category ${categoryId} does not exist`, 404)
 
     const newProduct = await Product.create({ name, price, description, categoryId })
+
+    await Inventory.create({ stock_quantity, productId: newProduct._id })
+    
     if(!newProduct) throw new AppError('Error in creating product', 400)
     
     res.status(201).json({
