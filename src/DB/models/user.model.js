@@ -81,8 +81,6 @@ userSchema.methods.changePassword = function (jwtInit){
   if (this.passwordChangedAt)
   {
     const changedAt = parseInt(this.passwordChangedAt / 1000, 10);
-    console.log(`the different between changed at , jwtinit`);
-    console.log(changedAt, jwtInit);
 
     return jwtInit < changedAt;
   }
@@ -132,8 +130,13 @@ userSchema.methods.createPasswordResetToken = function (){
 
 userSchema.post('save', async function (doc , next){
 
-  const {_id} = this;
-  await Cart.create({userId: _id});
+  const existCart = await Cart.findOne({userId: doc._id});
+
+  if (!existCart){
+
+    const newCart = await Cart.create({userId: doc._id});
+  }
+
   next();
 })
 const User = model("User", userSchema);

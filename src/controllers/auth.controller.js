@@ -155,6 +155,7 @@ const activateUser = catchAsync(async (req, res ,next)=>{
 
   const user = await User.findOneAndUpdate({activateToken}, {active: true}, {new: true, runValidators: true});
 
+  
 
   res.status(200).json({
       status: 'success',

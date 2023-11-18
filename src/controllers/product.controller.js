@@ -25,7 +25,7 @@ const createProduct = catchAsync(async ( req, res, next ) =>{
 const getProductDetails = catchAsync(async ( req, res, next ) =>{
     const { id } = req.params;
 
-    const product = await Product.findOne({ _id: id })
+    const product = await Product.findOne({ _id: id });
     if(!product) throw new AppError('Product not found', 404)
 
     res.status(200).json({
