@@ -16,6 +16,17 @@ const cartSchema = new mongoose.Schema({
     timestamps: true
 });
 
+
+cartSchema.methods.toJSON = function(){
+    const cart = this;
+
+    const cartObject = this.toObject();
+
+    delete cartObject.__v;
+
+    return cartObject;
+}
+
 const Cart = mongoose.model('Cart', cartSchema);
 
 export default Cart;
