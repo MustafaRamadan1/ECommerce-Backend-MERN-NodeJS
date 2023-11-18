@@ -6,6 +6,7 @@ import bcrypt from 'bcryptjs';
 
 import crypto from 'crypto';
 
+import Cart from './cart.model';
 const userSchema = new Schema({
   name: {
     type: String,
@@ -126,6 +127,15 @@ userSchema.methods.createPasswordResetToken = function (){
   return resetToken;
   
 }
+
+
+
+userSchema.post('save', async function (doc , next){
+
+  const {_id} = this;
+  await Cart.create({userId: _id});
+  next();
+})
 const User = model("User", userSchema);
 
 export default User;
