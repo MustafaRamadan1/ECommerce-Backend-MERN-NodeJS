@@ -2,6 +2,7 @@ import CartItem from '../DB/models/cartItem.model';
 import Cart from '../DB/models/cart.model';
 import catchAsync from '../utils/catchAsync';
 import AppError from '../utils/appError';
+import AppFeature from '../utils/appFeature';
 
 const getTotalPrice = function (cartItem){
 
@@ -39,14 +40,18 @@ const getCartItemForUser = catchAsync(async (req, res, next)=>{
 
     const userCart = await Cart.findOne({userId});
 
-    const userCartItems = await CartItem.find({cartId: userCart._id}).populate('productId');
+    const appFeature = new AppFeature(CartItem.find({cartId: userCart._id}), req.query).pagination(3);
+
+    // const userCartItems = await CartItem.find({cartId: userCart._id}).populate('productId');
+
+    const userCartItems = await appFeature.query.populate('productId');
 
     let total = 0;
 
     total = getTotalPrice(userCartItems);
 
-        userCart.total = total;
-        await userCart.save();
+    userCart.total = total;
+    await userCart.save();
 
     res.status(200).json({
         status: 'success',
