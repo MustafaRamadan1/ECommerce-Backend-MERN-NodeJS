@@ -21,7 +21,6 @@ app.use(appRoutes);
 
 
 
-
 app.all("*", (req, res ,next)=>{
 
     return next(new AppError('Page not Found', 404));

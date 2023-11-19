@@ -26,7 +26,12 @@ const product = {
         .messages({
             'string.pattern.base' : 'Category ID is invalid',
         }),
-        productImgs: Joi.any()
+        productImgs: Joi.any(),
+        stock_quantity: Joi.number()
+        .min(0)
+        .messages({
+            'number.min': 'Quantity must be positive number',
+        }),
     }),
     params: Joi.object().keys({
         id: Joi.string().trim().guid({ version: 'uuidv4' })
