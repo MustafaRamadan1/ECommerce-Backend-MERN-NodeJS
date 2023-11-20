@@ -6,8 +6,7 @@ import catchAsync from "../utils/catchAsync";
 import AppError from "../utils/appError";
 import sendEmail from '../utils/sendEmail';
 import {createToken} from '../utils/helperFuncs';
-
-
+import createQRCode from '../utils/qrCodeGenerator';
 
 const signUp = catchAsync(async (req, res, next) => {
   const { name, email, password, confirmPassword, DOB } = req.body;
@@ -28,6 +27,9 @@ const signUp = catchAsync(async (req, res, next) => {
 
       const activateToken = user.createActivateToken();
       await user.save();
+
+      const qrCodeDesign  = await createQRCode(`to activate your Account please go to this route
+      ${req.protocol}://${req.get('host')}/api/v1/users/activate/${activateToken}`);
       await sendEmail({
         to: user.email,
         subject: 'Activate your Email in our Website',
@@ -39,7 +41,8 @@ const signUp = catchAsync(async (req, res, next) => {
       res.status(200).json({
         status: "success",
         token,
-        date:user
+        data:user,
+        qrCodeDesign 
       });
     }
 
