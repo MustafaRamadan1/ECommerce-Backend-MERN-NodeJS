@@ -45,7 +45,10 @@ const getCartItemForUser = catchAsync(async (req, res, next)=>{
 
     // const userCartItems = await CartItem.find({cartId: userCart._id}).populate('productId');
 
-    const userCartItems = await appFeature.query.populate('productId');
+    const userCartItems = await appFeature.query.populate({
+        path: 'productId',
+        select: '_id name price productImgs '
+    }).select('-cartId ');
 
     let total = 0;
 
@@ -60,7 +63,6 @@ const getCartItemForUser = catchAsync(async (req, res, next)=>{
         cartItems: userCartItems,
         cart: userCart
     });
-    
-})
+    });
 
 export default {createCartItem, getCartItemForUser}

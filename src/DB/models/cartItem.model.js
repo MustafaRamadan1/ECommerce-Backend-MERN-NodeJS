@@ -29,6 +29,9 @@ cartItemSchema.methods.toJSON = function(){
 
     delete cartItemObject.productId.__v;
 
+    delete cartItemObject.createdAt;
+    delete cartItemObject.updatedAt;
+
     return cartItemObject;
 }
 
