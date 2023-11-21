@@ -57,9 +57,13 @@ const signUp = catchAsync(async (req, res, next) => {
 const login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
-  const user = await User.findOne({ email })
+  const user = await User.findOne({ email }).populate('cart');
+
+  if (!user) return next(new AppError("Incorrect email or password", 401));
+  
 
   const correct =  await user.correctPassword(password);
+
 
   if (!user || !correct)
     return next(new AppError("Incorrect email or password", 401));

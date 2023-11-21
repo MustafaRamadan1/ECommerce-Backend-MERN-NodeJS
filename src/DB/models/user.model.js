@@ -134,10 +134,23 @@ userSchema.post('save', async function (doc , next){
 
   if (!existCart){
 
-    const newCart = await Cart.create({userId: doc._id});
+    const newCart = new Cart({
+      userId: doc._id
+    });
+
+    await newCart.save();
   }
 
   next();
+})
+
+
+
+userSchema.virtual('cart' ,{
+  ref: 'Cart',
+  localField: '_id',
+  foreignField: 'userId',
+  
 })
 const User = model("User", userSchema);
 

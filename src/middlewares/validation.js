@@ -20,7 +20,6 @@ const validation = (schema) => (req, res, next) => {
     );
   } else {
     next();
-    console.log(`success`);
   }
 };
 

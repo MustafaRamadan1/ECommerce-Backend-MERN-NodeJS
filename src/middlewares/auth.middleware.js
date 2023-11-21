@@ -23,11 +23,12 @@ const protect = catchAsync(async (req, res , next)=>{
   const decoded = await promisify(jwt.verify)(token, process.env.SECERTKEY);
   //3) after verfiy the token and it's valid and not expire we'll have the payload and by the id we'll check if we have user with this id
 
-  const freshUser = await User.findById(decoded.id);
+  const freshUser = await User.findById(decoded.id).populate('cart');
 
   if (!freshUser) return next(new AppError('The user no longer exist', 401));
   //4) check if the user change the password after we send the token of it if he didn't so we go to the next protected middleware
 
+  console.log(freshUser);
   if(freshUser.changePassword(decoded.iat)) return next(new AppError('User recently changed password! Please login again', 401));
 
   req.user = freshUser;

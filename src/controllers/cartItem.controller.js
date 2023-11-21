@@ -18,8 +18,8 @@ const getTotalPrice = function (cartItem){
 
 const createCartItem = catchAsync(async (req, res, next)=>{
 
-    const {cartId, productId, quantity} = req.body;
-
+    const { productId, quantity} = req.body;
+    const cartId = req.user.cart[0]._id;
     const newCartItem  = await CartItem.create({productId , cartId, quantity});
     console.log(newCartItem);
 
@@ -35,12 +35,13 @@ const createCartItem = catchAsync(async (req, res, next)=>{
 
 const getCartItemForUser = catchAsync(async (req, res, next)=>{
   
+    const userCart = req.user.cart[0];
+    // const userId = req.user._id;
 
-    const userId = req.user._id;
+    // const userCart = await Cart.findOne({userId});
 
-    const userCart = await Cart.findOne({userId});
-
-    const appFeature = new AppFeature(CartItem.find({cartId: userCart._id}), req.query).pagination(3);
+    console.log();
+    const appFeature = new AppFeature(CartItem.find({cartId: req.user.cart[0]._id}), req.query).pagination(3);
 
     // const userCartItems = await CartItem.find({cartId: userCart._id}).populate('productId');
 

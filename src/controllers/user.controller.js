@@ -11,7 +11,7 @@ const getAllUsers = catchAsync(async (req, res, next) => {
   const appFeature = new AppFeature(User.find(), req.query).filter().sort().limitFields().pagination(2);
 
 
-  const users = await appFeature.query;
+  const users = await appFeature.query.populate('cart');
 
   if (!users) return next(new AppError(`There's No Users`, 404));
   res.status(200).json({
