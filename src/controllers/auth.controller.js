@@ -7,6 +7,7 @@ import AppError from "../utils/appError";
 import sendEmail from '../utils/sendEmail';
 import {createToken} from '../utils/helperFuncs';
 import createQRCode from '../utils/qrCodeGenerator';
+import Session from '../DB/models/session.model';
 
 const signUp = catchAsync(async (req, res, next) => {
   const { name, email, password, confirmPassword, DOB } = req.body;
@@ -72,6 +73,9 @@ const login = catchAsync(async (req, res, next) => {
     if (!user.active) return next(new AppError('Please activate your account', 401));
   const token = createToken({id: user._id});
 
+  const newSession = await Session.create({userId: user._id, token});
+  
+console.log(newSession);
   res.status(200).json({
     status: "success",
     token,
