@@ -144,14 +144,6 @@ userSchema.post('save', async function (doc , next){
   next();
 })
 
-
-
-userSchema.virtual('cart' ,{
-  ref: 'Cart',
-  localField: '_id',
-  foreignField: 'userId',
-  
-})
 const User = model("User", userSchema);
 
 export default User;

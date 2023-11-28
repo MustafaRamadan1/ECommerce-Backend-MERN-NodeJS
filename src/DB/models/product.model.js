@@ -33,6 +33,17 @@ const productSchema = new Schema({
         type: String,
         default: []
     }],
+    ratingAverage: {
+        type: Number,
+        min: 0,
+        max: 5,
+        set: value => Math.round(value *10) /10,
+        default: 4.5
+    },
+    ratingQuantity: {
+        type: Number,
+        default: 0
+    }
 
 }, {
     timestamps: true

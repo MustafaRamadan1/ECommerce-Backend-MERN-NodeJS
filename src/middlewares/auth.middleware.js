@@ -27,6 +27,8 @@ const protect = catchAsync(async (req, res , next)=>{
 
   const decoded = await promisify(jwt.verify)(token, process.env.SECERTKEY);
   //3) after verfiy the token and it's valid and not expire we'll have the payload and by the id we'll check if we have user with this id
+  
+
   const hashed = hashToken(token);
   const userSession = await Session.findOne({token: hashed, userId: decoded.id});
 

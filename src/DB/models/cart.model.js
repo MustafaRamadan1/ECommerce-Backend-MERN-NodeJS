@@ -23,6 +23,8 @@ cartSchema.methods.toJSON = function(){
     const cartObject = this.toObject();
 
     delete cartObject.__v;
+    delete cartObject.createdAt;
+    console.log(cartObject);
 
     return cartObject;
 }

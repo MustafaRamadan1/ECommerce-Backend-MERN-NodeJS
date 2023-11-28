@@ -13,6 +13,10 @@ const cartItemSchema = new mongoose.Schema({
     quantity:{
         type: Number,
         default: 1
+    },
+    userId:{
+        type: mongoose.Schema.ObjectId,
+        ref: 'User'
     }
 }, 
 {

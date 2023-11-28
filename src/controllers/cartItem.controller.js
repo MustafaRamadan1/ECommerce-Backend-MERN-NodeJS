@@ -15,9 +15,11 @@ const getTotalPrice = function (cartItem) {
 
 const createCartItem = catchAsync(async (req, res, next) => {
   const { productId, quantity } = req.body;
-  const cartId = req.user.cart[0]._id;
-  const newCartItem = await CartItem.create({ productId, cartId, quantity });
-  console.log(newCartItem);
+
+  const cart = await Cart.findOne({userId: req.user._id});
+
+  const cartId = cart._id;
+  const newCartItem = await CartItem.create({ productId, cartId, quantity, userId:req.user._id });
 
   if (!newCartItem)
     return next(new AppError("Error in creating cart item", 400));
@@ -30,10 +32,10 @@ const createCartItem = catchAsync(async (req, res, next) => {
 });
 
 const getCartItemForUser = catchAsync(async (req, res, next) => {
-  const userCart = req.user.cart[0];
-
+ 
+  const cart = await Cart.findOne({userId: req.user._id});
   const appFeature = new AppFeature(
-    CartItem.find({ cartId: req.user.cart[0]._id }),
+    CartItem.find({ userId: req.user._id }),
     req.query
   ).pagination(3);
 
@@ -48,14 +50,14 @@ const getCartItemForUser = catchAsync(async (req, res, next) => {
 
   total = getTotalPrice(userCartItems);
 
-  userCart.total = total;
-  await userCart.save();
+  cart.total = total;
+  await cart.save();
 
   res.status(200).json({
     status: "success",
     result: userCartItems.length,
     cartItems: userCartItems,
-    cart: userCart,
+    cart,
   });
 });
 
