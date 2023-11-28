@@ -1,5 +1,6 @@
 import {promisify} from 'util';
 import crypto from 'crypto';
+import {v4 as uuidV4} from 'uuid';
 import * as jwt from "jsonwebtoken";
 import User from "../DB/models/user.model";
 import catchAsync from "../utils/catchAsync";
@@ -58,7 +59,7 @@ const signUp = catchAsync(async (req, res, next) => {
 const login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
-  const user = await User.findOne({ email }).populate('cart');
+  const user = await User.findOne({ email });
 
   if (!user) return next(new AppError("Incorrect email or password", 401));
   
@@ -71,9 +72,15 @@ const login = catchAsync(async (req, res, next) => {
 
 
     if (!user.active) return next(new AppError('Please activate your account', 401));
-  const token = createToken({id: user._id});
 
-  const newSession = await Session.create({userId: user._id, token});
+    const tokenId = uuidV4();
+    console.log(tokenId);
+
+  const token = createToken({id: user._id, tokenId});
+
+
+
+  const newSession = await Session.create({userId: user._id, tokenId});
   
 console.log(newSession);
   res.status(200).json({

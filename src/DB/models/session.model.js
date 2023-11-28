@@ -6,23 +6,22 @@ const sessionSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         required:[true, 'Session must belongs to a user']
     },
-    token:{
+    tokenId:{
         type: String,
         required: [true, 'Session must has a Token']
     },
-    state:{
+    valid:{
         type: Boolean,
         default: true
     }
 });
 
-sessionSchema.pre('save', function(next){
+sessionSchema.methods.toJson = function(){
 
-    this.token = crypto.createHash('sha256').update(this.token).digest('hex');
-    next();
-})
-
-
+    const session = this;
+    const sessionObject = this.toobject();
+    delete sessionObject.__v;
+}
 
 const Session = mongoose.model('Session', sessionSchema);
 
