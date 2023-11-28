@@ -39,19 +39,34 @@ ratingSchema.statics.getRatingAverage = async function(productId){
 
   console.log(states);
 
-  await Product.findByIdAndUpdate(this.tour,{
-    ratingAverage: states[0].RatingAverage,
-    ratingQuantity: states[0].RatingsNum
-  });
-
+ if (states.length > 0)
+ {
+    await Product.findByIdAndUpdate(productId,{
+        ratingAverage: states[0].RatingAverage,
+        ratingQuantity: states[0].RatingsNum
+      });
+    
+ } else{
+    
+    await Product.findByIdAndUpdate(productId,{
+        ratingAverage: 4.5,
+        ratingQuantity: 0
+      });
+ }
 };
 
 ratingSchema.post('save', function(docs, next){
 
     this.constructor.getRatingAverage(this.product);
     next();
-})
+});
 
+
+ratingSchema.post(/findOneAnd/, function(docs, next){
+
+    docs.constructor.getRatingAverage(docs.product);
+    next();
+})
 
 const Rating = mongoose.model('Rating', ratingSchema);
 

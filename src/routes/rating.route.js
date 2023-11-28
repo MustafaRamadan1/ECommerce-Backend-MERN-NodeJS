@@ -6,4 +6,6 @@ const router = express.Router();
 
 
 router.route('/').post(ratingController.createRating);
+router.patch('/:id', ratingController.updateRating);
+router.delete('/:id', ratingController.deleteRating);
 export default router;

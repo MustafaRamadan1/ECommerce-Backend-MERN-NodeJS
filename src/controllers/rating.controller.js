@@ -17,8 +17,40 @@ const createRating = catchAsync(async (req, res , next)=>{
         }
     })
 
+});
+
+
+const updateRating =  catchAsync(async (req, res , next)=>{
+    const {id} = req.params;
+
+    console.log(id);
+    
+    const rating  = await Rating.findByIdAndUpdate(id, req.body, {
+        new: true, runValidators: true
+    })
+    console.log(rating);
+    res.status(200).json({
+        status: 'success',
+        message: 'Rating Updated',
+        data: {
+            rating 
+        }
+    })
+});
+
+
+const deleteRating = catchAsync(async (req, res , next)=>{
+
+    const {id} = req.params;
+
+    await Rating.findByIdAndDelete(id);
+
+    res.status(204).json({
+        status: 'success',
+        message: 'Deleted Success'
+    })
 })
 
 
 
-export default {createRating};
+export default {createRating, updateRating, deleteRating};

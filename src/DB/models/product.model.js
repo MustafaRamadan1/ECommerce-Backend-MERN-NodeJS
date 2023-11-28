@@ -62,6 +62,7 @@ productSchema.post('findOneAndDelete', async function (doc){
 })
 
 
+
 const Product = model("Product", productSchema);
 
 export default Product;
