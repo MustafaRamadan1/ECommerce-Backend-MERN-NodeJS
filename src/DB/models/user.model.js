@@ -64,9 +64,9 @@ const userSchema = new Schema({
   id: false
 });
 
-userSchema.virtual('age').get(function (){
-  return new Date().getFullYear() - this.DOB.getFullYear();
-})
+// userSchema.virtual('age').get(function (){
+//   return new Date().getFullYear() - this.DOB.getFullYear();
+// })
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();

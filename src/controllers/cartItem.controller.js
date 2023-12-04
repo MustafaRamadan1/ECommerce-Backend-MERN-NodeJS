@@ -61,4 +61,30 @@ const getCartItemForUser = catchAsync(async (req, res, next) => {
   });
 });
 
-export default { createCartItem, getCartItemForUser };
+
+const deleteCartItem = catchAsync(async (req, res , next)=>{
+
+  const {id} = req.params;
+
+  const cartItem = await CartItem.findOne({_id: id}).populate('productId');
+  console.log(cartItem);
+
+  if (!cartItem) return next(new AppError('There is No Cart Item with this Id', 404));
+
+  const cart = await Cart.findById(cartItem.cartId);
+ 
+  const deletedCartItem = await CartItem.findByIdAndDelete(id);
+
+  if(!deletedCartItem) return next(new AppError('Error in Deleting cartItem ', 400));
+
+  cart.total =  cart.total - (cartItem.quantity *  cartItem.productId.price);
+
+  console.log(cart.total);
+  await cart.save();
+
+
+    res.status(204).json({
+      status: 'success'
+    })
+})
+export default { createCartItem, getCartItemForUser, deleteCartItem };

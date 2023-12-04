@@ -20,6 +20,8 @@ const ratingSchema = new mongoose.Schema({
         type: String,
         ref: 'Product'
     }
+}, {
+    timestamps: true
 });
 
 ratingSchema.statics.getRatingAverage = async function(productId){

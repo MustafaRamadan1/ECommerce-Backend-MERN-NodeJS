@@ -27,7 +27,8 @@ const updateRating =  catchAsync(async (req, res , next)=>{
     
     const rating  = await Rating.findByIdAndUpdate(id, req.body, {
         new: true, runValidators: true
-    })
+    });
+    
     console.log(rating);
     res.status(200).json({
         status: 'success',
