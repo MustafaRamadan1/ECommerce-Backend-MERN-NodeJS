@@ -79,12 +79,41 @@ const deleteCartItem = catchAsync(async (req, res , next)=>{
 
   cart.total =  cart.total - (cartItem.quantity *  cartItem.productId.price);
 
-  console.log(cart.total);
   await cart.save();
 
 
     res.status(204).json({
       status: 'success'
     })
+});
+
+
+const updateCartItem = catchAsync(async (req, res , next)=>{
+
+  const {id} =  req.params;
+
+  const {quantity} = req.body;
+
+  const cartItem  = await CartItem.findById(id);
+
+  if(!cartItem) return next(new AppError('There is no cart With this ID', 404));
+
+  const updatedCartItem = await CartItem.findByIdAndUpdate(id, {quantity}, {new: true, runValidators: true});
+
+  if(!updatedCartItem) return next(new AppError('There is an Error in Updating Cart Item', 400));
+
+console.log(updatedCartItem);
+
+if(updatedCartItem.quantity === 0){
+  await CartItem.findByIdAndDelete(id);
+};
+
+res.status(200).json({
+  status: 'success',
+  data: {
+
+    cartItem: updatedCartItem
+  }
 })
-export default { createCartItem, getCartItemForUser, deleteCartItem };
+})
+export default { createCartItem, getCartItemForUser, deleteCartItem , updateCartItem};
