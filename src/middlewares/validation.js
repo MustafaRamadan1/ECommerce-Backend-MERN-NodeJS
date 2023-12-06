@@ -4,6 +4,7 @@ const validation = (schema) => (req, res, next) => {
   let errorCollection = [];
   const checkParts = ["body", "query", "params"];
 
+  if(schema["params"]) console.log("we are in the params");
   checkParts.forEach((key) => {
     if (schema[key]) {
       const { error } = schema[key].validate(req[key], { abortEarly: false });

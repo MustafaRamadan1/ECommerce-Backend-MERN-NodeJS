@@ -14,14 +14,14 @@ import checkChangePassword from '../middlewares/checkPassword.middleware'
 
 const router = express.Router();
 
-router.patch('/activate/:token', authController.activateUser);
+router.patch('/activate/:token', validation(userValidator.activateUser), authController.activateUser);
 router.post('/signUp',  validation(userValidator.signup) , authController.signUp);
 
 router.get('/', protect, checkChangePassword,  checkRole('user'),   userController.getAllUsers);
 
 router.post('/login',validation(userValidator.login), authController.login);
-router.patch('/updatePassword', protect, authController.updatePassword );
-router.post('/forgetPassword', authController.sendEmailForgetPassword);
-router.patch('/forgetPassword/:token', authController.forgetPassword);
+router.patch('/updatePassword', validation(userValidator.updatePassword), protect, authController.updatePassword );
+router.post('/forgetPassword', validation(userValidator.forgetPasswordForEmail),  authController.sendEmailForgetPassword);
+router.patch('/forgetPassword/:token', validation(userValidator.forgetPasswordToken),  authController.forgetPassword);
 
 export default router;
