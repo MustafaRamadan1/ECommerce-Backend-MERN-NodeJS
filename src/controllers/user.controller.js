@@ -24,10 +24,27 @@ const getAllUsers = catchAsync(async (req, res, next) => {
 });
 
  
+const updateMe = catchAsync(async(req, res , next)=>{
+
+  if(req.body.password ||  req.body.confirmPassword) 
+  return next(new AppError('To Update Password Please go to /api/v1/users/updatePassword', 400));
+
+  const user = await User.findByIdAndUpdate(req.user._id, req.body, {new: true, runValidators: true});
+
+  if(!user) return next(new AppError('Error in Updating the user Data'));
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      user
+    }
+  })
+});
 
 
 
 
 export default {
   getAllUsers,
+  updateMe
 };
