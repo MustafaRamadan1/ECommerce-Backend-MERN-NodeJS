@@ -46,14 +46,15 @@ class AppFeature {
     }
 
     pagination(documentsPerPage ){
-        
-    const page = this.queryString.page * 1 || 1;
+        const skip = this.queryString.page * this.queryString.limit;
+        this.query.skip(skip).limit(this.queryString.limit);
+    // const page = this.queryString.page * 1 || 1;
 
-    const limit = this.queryString.limit || documentsPerPage;
+    // const limit = this.queryString.limit || documentsPerPage;
 
-    const skip =  (page - 1 ) * limit;
-
-    this.query = this.query.skip(skip).limit(limit);
+    // const skip =  (page - 1 ) * limit;
+console.log(this.query);
+    // this.query = this.query.skip(skip).limit(limit);
 
     return this;
     }

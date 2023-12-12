@@ -5,6 +5,7 @@ import AppError from "../utils/appError";
 import AppFeature from '../utils/appFeature';
 import Category from "../DB/models/category.model";
 import Inventory from "../DB/models/inventory.model";
+import searchUtils from "../utils/searchUtils";
 
 const createProduct = catchAsync(async ( req, res, next ) =>{
     const { 
@@ -92,11 +93,29 @@ const updateProduct = catchAsync(async ( req, res, next ) =>{
     })
 })
 
+const searchOnProduct = catchAsync(async (req, res, next) => {
+    try {
+        const { searchField, searchValue, page, limit } = req.query;
+        const searchUtilsInstance = new searchUtils(Product, { searchField, searchValue, page, limit});
+        const searchQuery = await searchUtilsInstance.search();
+
+        const searchQueryResult = await searchQuery.query;
+        
+        res.status(200).json({
+            status: 'success',
+            data:searchQueryResult,
+        });
+    } catch (err) {
+        next(err);
+    }
+});
+
 
 export default {
     getAllProducts,
     createProduct,
     getProductDetails,
     deleteProduct,
-    updateProduct
+    updateProduct,
+    searchOnProduct
 };
