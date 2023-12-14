@@ -9,7 +9,8 @@ import AppError from "./utils/appError";
 import rateLimiter from './utils/rate-limiter';
 
 const app = express();
-
+app.set('view engine', 'pug');
+app.set('views', `${__dirname}/views`);
 app.use(helmet());
 app.use(rateLimiter(100, (60 * 60 * 1000)));
 app.use(morgan("dev"));

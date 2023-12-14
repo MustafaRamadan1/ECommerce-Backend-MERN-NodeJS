@@ -1,0 +1,19 @@
+extends emailBase 
+
+block content 
+
+    p Hi #{firstName},
+    p Welcome to Natours, we're glad to have you 🎉🙏
+    p To Active your Account you can go to this URL or Press on the button below
+    p #{url}
+    table.btn.btn-primary(role='presentation', border='0', cellpadding='0', cellspacing='0')
+        tbody
+            tr
+                td(align='left')
+                    table(role='presentation', border='0', cellpadding='0', cellspacing='0')
+                        tbody
+                            tr
+                                td
+                                    a(href=`${url}`, target='_blank') activate Account
+    p If you need any help , please don't hesitate to contact me!
+    p - Mustafa Mail sender

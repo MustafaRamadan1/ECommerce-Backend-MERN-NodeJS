@@ -9,6 +9,7 @@ import sendEmail from "../utils/sendEmail";
 import { createToken } from "../utils/helperFuncs";
 import createQRCode from "../utils/qrCodeGenerator";
 import Session from "../DB/models/session.model";
+import Email from '../utils/sendEmail'
 
 const signUp = catchAsync(async (req, res, next) => {
   const { name, email, password, confirmPassword, DOB } = req.body;
@@ -33,14 +34,19 @@ const signUp = catchAsync(async (req, res, next) => {
       ${req.protocol}://${req.get(
         "host"
       )}/api/v1/users/activate/${activateToken}`);
-    await sendEmail({
-      to: user.email,
-      subject: "Activate your Email in our Website",
-      text: `to activate your Account please go to this route
-        ${req.protocol}://${req.get(
+      const url  = ` ${req.protocol}://${req.get(
         "host"
-      )}/api/v1/users/activate/${activateToken}`,
-    });
+      )}/api/v1/users/activate/${activateToken}`
+
+      await new Email(user, url).sendActivate();
+    // await sendEmail({
+    //   to: user.email,
+    //   subject: "Activate your Email in our Website",
+    //   text: `to activate your Account please go to this route
+    //     ${req.protocol}://${req.get(
+    //     "host"
+    //   )}/api/v1/users/activate/${activateToken}`,
+    // });
     const token = createToken({ id: user._id });
 
     res.status(200).json({
