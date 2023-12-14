@@ -9,7 +9,7 @@ import sendEmail from "../utils/sendEmail";
 import { createToken } from "../utils/helperFuncs";
 import createQRCode from "../utils/qrCodeGenerator";
 import Session from "../DB/models/session.model";
-import Email from '../utils/sendEmail'
+import Email from "../utils/sendEmail";
 
 const signUp = catchAsync(async (req, res, next) => {
   const { name, email, password, confirmPassword, DOB } = req.body;
@@ -34,19 +34,12 @@ const signUp = catchAsync(async (req, res, next) => {
       ${req.protocol}://${req.get(
         "host"
       )}/api/v1/users/activate/${activateToken}`);
-      const url  = ` ${req.protocol}://${req.get(
-        "host"
-      )}/api/v1/users/activate/${activateToken}`
+    const url = ` ${req.protocol}://${req.get(
+      "host"
+    )}/api/v1/users/activate/${activateToken}`;
 
-      await new Email(user, url).sendActivate();
-    // await sendEmail({
-    //   to: user.email,
-    //   subject: "Activate your Email in our Website",
-    //   text: `to activate your Account please go to this route
-    //     ${req.protocol}://${req.get(
-    //     "host"
-    //   )}/api/v1/users/activate/${activateToken}`,
-    // });
+    await new Email(user, url).sendActivate();
+
     const token = createToken({ id: user._id });
 
     res.status(200).json({
@@ -73,7 +66,6 @@ const login = catchAsync(async (req, res, next) => {
   if (!user || !correct)
     return next(new AppError("Incorrect email or password", 401));
 
-  
   if (!user.active)
     return next(new AppError("Please activate your account", 401));
 
@@ -91,28 +83,20 @@ const login = catchAsync(async (req, res, next) => {
 });
 
 const sendEmailForgetPassword = catchAsync(async (req, res, next) => {
-  
   const { email } = req.body;
-  
-  try {
-    
-      const user = await User.findOne({ email });
-    
-      if (!user) return next(new AppError("No user with this Email", 401));
-    
-      const resetToken = user.createPasswordResetToken();
-    
-      await user.save();
-    const message = `Please go to this route if you want to change your password 
-                    ${req.protocol}://${req.get(
-      "host"
-    )}/api/v1/users/forgetPassword/${resetToken}`;
-    await sendEmail({
-      to: user.email,
-      subject: "Reset your Password , It is valid for 10 minutes only ",
-      text: message,
-    });
 
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) return next(new AppError("No user with this Email", 401));
+
+    const resetToken = user.createPasswordResetToken();
+
+    await user.save();
+    const url = `${req.protocol}://${req.get(
+      "host"
+    )}/api/v1/users/forgetPassword/${resetToken}`
+    await new Email(user, url).send('forgetPassword','Reset your Password , It is valid for 10 minutes only' )
     res.status(200).json({
       status: "success",
       message: "Email has been sent",
@@ -204,9 +188,6 @@ const updatePassword = catchAsync(async (req, res, next) => {
     user,
   });
 });
-
-
-
 
 export default {
   signUp,
