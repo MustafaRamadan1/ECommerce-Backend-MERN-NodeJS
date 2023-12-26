@@ -1,9 +1,9 @@
 import connectDb  from './DB/Connection';
-
+import logger  from './utils/logger';
 
 connectDb();
 
 process.on('uncaughtException', (err)=>{
-    console.log(`Error is : ${err.message}`);
+    logger.error(`Error is : ${err.message}`)
+    // console.log(`Error is : ${err.message}`);
 })
-

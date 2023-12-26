@@ -1,8 +1,7 @@
 import mongoose, { connect } from 'mongoose';
-
 import dotenv from 'dotenv';
-
 import app from '../app';
+import logger from '../utils/logger';
 
 dotenv.config();
 
@@ -14,9 +13,16 @@ const connectDb = () =>{
     
     mongoose.connect(process.env.DB_LINK).then(()=>{
         console.log(`Connection Success`);
-        app.listen(port, '127.0.0.1', ()=>console.log(`Server is running on port ${port}`));
+        logger.info('connection Success');
+        app.listen(port, '127.0.0.1', ()=>{
+          logger.info(`Server listening on PORT ${port}`);
+          console.log(`Server is running on port ${port}`)
+        });
         
-      }).catch((err)=>console.log(err.message));
+      }).catch((err)=>{
+        logger.error(err.message);
+        console.log(err.message)
+      });
 };
 
 export default connectDb;
