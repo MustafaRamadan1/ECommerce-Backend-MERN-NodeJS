@@ -4,7 +4,7 @@ const createCartItem = {
     body: joi.object().keys({
         productId: joi.string()
         .required()
-        .regex(/^[0-9a-fA-F]{24}$/, 'object Id').message(', Invalid Object Id '),
+       ,
         quantity: joi.number().min(0).messages({
             'number.base': 'quantity should be a number',
             'number.min': 'quantity should be 0 or more '

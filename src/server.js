@@ -7,3 +7,7 @@ process.on('uncaughtException', (err)=>{
     logger.error(`Error is : ${err.message}`)
     // console.log(`Error is : ${err.message}`);
 })
+
+
+
+
