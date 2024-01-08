@@ -30,10 +30,8 @@ Email notifications for order confirmation and updates.
 
 Node.js and Express for server-side development.
 JWT for secure user authentication.
-Logging mechanisms for monitoring system activities.
-# Frontend:
+Logging mechanisms for monitoring system activities
 
-React for a dynamic and responsive user interface.
 # Payment Processing:
 
 Stripe API integration for secure payments.
